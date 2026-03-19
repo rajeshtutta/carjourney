@@ -2,7 +2,7 @@ pipeline {
 agent any
 
 environment {
-    DOCKER_IMAGE = "rajeshtutta123/car_journey_project_img"
+    DOCKER_IMAGE = "rajeshtutta123/car_journey_project_img1"
 }
 
 stages {
@@ -45,7 +45,7 @@ stages {
         steps {
             sh '''
             docker rm -f Hotstar_project_cont || true
-            docker run -d -p 1234:8080 --name Hotstar_project_cont $DOCKER_IMAGE:latest
+            docker run -d -p 1234:8080 --name Hotstar_project_cont1 $DOCKER_IMAGE:latest
             '''
         }
     }
