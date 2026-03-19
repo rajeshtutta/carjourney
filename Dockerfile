@@ -1,19 +1,5 @@
-FROM python:3.9-slim
+FROM nginx:alpine
 
-# set working directory
-WORKDIR /app
+COPY . /usr/share/nginx/html
 
-# copy requirements
-COPY requirements.txt .
-
-# install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# copy project files
-COPY . .
-
-# expose port
-EXPOSE 8080
-
-# run application
-CMD ["python","app.py"]
+EXPOSE 80
