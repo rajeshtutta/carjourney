@@ -3,6 +3,7 @@ agent any
 
 environment {
     DOCKER_IMAGE = "rajeshtutta123/car_journey_project_img1"
+    CONTAINER_NAME = "car_journey_cont"
 }
 
 stages {
@@ -44,8 +45,8 @@ stages {
     stage('Deploy Container') {
         steps {
             sh '''
-            docker rm -f Hotstar_project_cont || true
-            docker run -d -p 1234:8080 --name Hotstar_project_cont1 $DOCKER_IMAGE:latest
+            docker rm -f $CONTAINER_NAME || true
+            docker run -d --name $CONTAINER_NAME -p 1234:8080 $DOCKER_IMAGE:latest
             '''
         }
     }
