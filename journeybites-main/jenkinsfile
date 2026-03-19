@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "surya8442/journeybites_image"
+        IMAGE_TAG = "latest"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Surya8442/journeybites.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo "Building Docker image..."
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+            }
+        }
+
+        stage('Test Docker Image') {
+            steps {
+                echo "Testing Docker image briefly..."
+                sh """
+                    container_id=\$(docker run -d -p 1525:8080 ${IMAGE_NAME}:${IMAGE_TAG})
+                    sleep 5
+                    echo "Container logs:"
+                    docker logs \$container_id
+                    docker stop \$container_id
+                """
+            }
+        }
+
+        stage('Push to DockerHub') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo "Logging in and pushing image to DockerHub..."
+                withCredentials([usernamePassword(credentialsId: 'dock', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Cleaning workspace..."
+            cleanWs()
+        }
+    }
+}
