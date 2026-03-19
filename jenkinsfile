@@ -8,7 +8,7 @@ environment {
 
 stages {
 
-    stage('GIT CHECKOUT') {
+    stage('Checkout') {
         steps {
             git branch: 'main',
             credentialsId: 'rajeshcred',
@@ -36,15 +36,14 @@ stages {
         }
     }
 
-    stage('Deploy Container') {
+    stage('Deploy') {
         steps {
             sh '''
             docker rm -f $CONTAINER_NAME || true
-            docker run -d --name $CONTAINER_NAME -p 1234:5000 $DOCKER_IMAGE:latest
+            docker run -d -p 1234:80 --name $CONTAINER_NAME $DOCKER_IMAGE:latest
             '''
         }
     }
 
 }
-
 }
